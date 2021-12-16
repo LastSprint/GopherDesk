@@ -23,13 +23,13 @@ Help Desk built on top of Trello with slack integration
 Trello has awesome webhooks API where you can register event which can listen updates of this model (on which you registered the hook)
 
 ```
-POST https://api.trello.com/1/tokens/7e005ee31394182cea367e36478010fe63225b1e83f6f216532cec90a95af8c1/webhooks/
+POST https://api.trello.com/1/tokens/{TOKEN}/webhooks/
 Content-Type: application/json
 
 {
-  "key": "b86a2e962858076b4a53ce4229b987b1",
-  "callbackURL": "http://lastsprint.dev:6672/api/v1/trello/webhook/boardChangeEvent",
-  "idModel": "619f420ee47cae31036a03c2",
+  "key": "{KEY}",
+  "callbackURL": "{URL}",
+  "idModel": "{MODELS}",
   "description": "Board hook"
 }
 ```
