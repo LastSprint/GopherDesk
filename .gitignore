@@ -17,4 +17,5 @@
 Server/dev.env
 k8s/
 
-/**/*.http!/Server/ThirdParty/Trello/requests.http
+Server/ThirdParty/Trello/requests.http
+/.idea/
