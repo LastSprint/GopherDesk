@@ -2,6 +2,7 @@ package Slack
 
 import (
 	"fmt"
+	"github.com/LastSprint/GopherDesk/L10n"
 	"github.com/LastSprint/GopherDesk/ThirdParty/Slack"
 	"log"
 )
@@ -82,22 +83,22 @@ func (s *Service) HandleForm(form *FormPayload) error {
 	return nil
 }
 
-var defaultDialog *Slack.DialogView = &Slack.DialogView{
+var defaultDialog = &Slack.DialogView{
 	CallbackID: ticketFormCallBackID,
 	Type:       Slack.DialogViewTypeModal,
 	Submit: Slack.ViewLabel{
 		Type:  Slack.ViewLabelTypePlainText,
-		Text:  "Send",
+		Text:  L10n.Print.Sprintf(L10n.SDFormSendKey),
 		Emoji: true,
 	},
 	Close: Slack.ViewLabel{
 		Type:  Slack.ViewLabelTypePlainText,
-		Text:  "Cancel",
+		Text:  L10n.Print.Sprintf(L10n.SDFormCancelKey),
 		Emoji: true,
 	},
 	Title: Slack.ViewLabel{
 		Type:  Slack.ViewLabelTypePlainText,
-		Text:  "New Service Desk Ticket",
+		Text:  L10n.Print.Sprintf(L10n.SDFormHeadTitleKey),
 		Emoji: true,
 	},
 	Blocks: []Slack.BlockItem{
@@ -106,7 +107,7 @@ var defaultDialog *Slack.DialogView = &Slack.DialogView{
 			Type: Slack.BlockItemTypeInput,
 			Label: Slack.ViewLabel{
 				Type: Slack.ViewLabelTypePlainText,
-				Text: "Title",
+				Text: L10n.Print.Sprintf(L10n.SDFormFieldTitleNameKey),
 			},
 			Element: Slack.BlockElement{
 				Type:        Slack.BlockElementTypePlainTextInput,
@@ -119,7 +120,7 @@ var defaultDialog *Slack.DialogView = &Slack.DialogView{
 			Type: Slack.BlockItemTypeInput,
 			Label: Slack.ViewLabel{
 				Type: Slack.ViewLabelTypePlainText,
-				Text: "Priority",
+				Text: L10n.Print.Sprintf(L10n.SDFormFieldPriorityKey),
 			},
 			Element: Slack.BlockElement{
 				Type:     Slack.BlockElementTypeStaticSelect,
@@ -128,7 +129,7 @@ var defaultDialog *Slack.DialogView = &Slack.DialogView{
 					{
 						Text: Slack.ViewLabel{
 							Type:  Slack.ViewLabelTypePlainText,
-							Text:  "🟢 Can wait for 5 hours",
+							Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityLowKey),
 							Emoji: false,
 						},
 						Value: TicketPriorityValueLow,
@@ -136,7 +137,7 @@ var defaultDialog *Slack.DialogView = &Slack.DialogView{
 					{
 						Text: Slack.ViewLabel{
 							Type:  Slack.ViewLabelTypePlainText,
-							Text:  "🟡 Can wait for 2 hours",
+							Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityMediumKey),
 							Emoji: false,
 						},
 						Value: TicketPriorityValueMedium,
@@ -144,7 +145,7 @@ var defaultDialog *Slack.DialogView = &Slack.DialogView{
 					{
 						Text: Slack.ViewLabel{
 							Type:  Slack.ViewLabelTypePlainText,
-							Text:  "🔴 Can't wait because somebody is dying",
+							Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityHighKey),
 							Emoji: false,
 						},
 						Value: TicketPriorityValueHigh,
@@ -157,7 +158,7 @@ var defaultDialog *Slack.DialogView = &Slack.DialogView{
 			Type: Slack.BlockItemTypeInput,
 			Label: Slack.ViewLabel{
 				Type: Slack.ViewLabelTypePlainText,
-				Text: "What happened:",
+				Text: L10n.Print.Sprintf(L10n.SDFormFieldDescriptionKey),
 			},
 			Element: Slack.BlockElement{
 				Type:        Slack.BlockElementTypePlainTextInput,
