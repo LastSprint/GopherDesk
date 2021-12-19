@@ -1,4 +1,4 @@
-package Tickets
+package Models
 
 import (
 	slack "github.com/LastSprint/GopherDesk/ThirdParty/Slack"

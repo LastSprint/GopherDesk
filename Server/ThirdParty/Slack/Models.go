@@ -2,7 +2,6 @@ package Slack
 
 type NewMessage struct {
 	Channel   string        `json:"channel"`
-	AsUser    bool          `json:"as_user"`
 	Blocks    []interface{} `json:"blocks"`
 	IconEmoji string        `json:"icon_emoji"`
 	IconUrl   string        `json:"icon_url"`
@@ -14,6 +13,6 @@ type NewMessage struct {
 }
 
 type User struct {
-	Name  string `json:"name"`
+	Name  string `json:"real_name"`
 	Email string `json:"email"`
 }

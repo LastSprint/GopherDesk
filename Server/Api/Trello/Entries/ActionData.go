@@ -3,7 +3,7 @@ package Entries
 type CardEntry struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
-	IDShort   string `json:"idShort"`
+	IDShort   int    `json:"idShort"`
 	ShortLink string `json:"shortLink"`
 }
 
@@ -30,4 +30,8 @@ type ActionDataOnAddMemberToCardEntry struct {
 	List     ListEntry `json:"list"`
 }
 
-type ActionDataOnAddMemberToCardEntry
+type ActionDataOnUpdateCardEntry struct {
+	Card       CardEntry `json:"card"`
+	ListBefore ListEntry `json:"listBefore"`
+	ListAfter  ListEntry `json:"listAfter"`
+}

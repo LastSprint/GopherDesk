@@ -1,16 +1,22 @@
 package Trello
 
 import (
-	"crypto/hmac"
 	"crypto/sha1"
-	"encoding/base64"
+	"encoding/json"
+	"github.com/LastSprint/GopherDesk/Api/Trello/Entries"
+	"github.com/LastSprint/GopherDesk/Utils"
 	"github.com/go-chi/chi/v5"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
+type WebHookHandlerService interface {
+	OnBoardChange(model *Entries.WebHookPayload) error
+}
+
 type Controller struct {
+	Service                   WebHookHandlerService
 	TrelloPayloadValidatorKey string
 	TrelloCallbackUrl         string
 }
@@ -40,27 +46,21 @@ func (c *Controller) boardChangeWebHookHandler(_ http.ResponseWriter, r *http.Re
 		return
 	}
 
-	if validatePayload(data, c.TrelloPayloadValidatorKey, digest, c.TrelloCallbackUrl) {
+	if Utils.ValidatePayload(data, c.TrelloPayloadValidatorKey, digest, c.TrelloCallbackUrl, sha1.New) {
 		log.Printf("[WARN] somebody %s was pretending Trello (payload didn't pass validation)", r.Host)
 		return
 	}
 
-	log.Println("[INFO] the body:")
-	log.Println(string(data))
-}
+	var payload Entries.WebHookPayload
 
-func validatePayload(payload []byte, secret, digest, url string) bool {
-	str := string(payload) + url
+	if err = json.Unmarshal(data, &payload); err != nil {
+		log.Printf("[ERR] couldn't parse requets %s body %s due to %s", r.URL.String(), string(data), err.Error())
+		return
+	}
 
-	var encoded []byte
-
-	base64.StdEncoding.Encode([]byte(str), encoded)
-
-	crp := hmac.New(sha1.New, []byte(secret))
-
-	crp.Write(encoded)
-
-	result := string(crp.Sum(nil))
-
-	return result == digest
+	go func(payload *Entries.WebHookPayload) {
+		if err := c.Service.OnBoardChange(payload); err != nil {
+			log.Printf("[ERR] Trello Payload Handler Service returned error -> %s\n", err.Error())
+		}
+	}(&payload)
 }
