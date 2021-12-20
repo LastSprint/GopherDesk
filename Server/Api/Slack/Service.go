@@ -43,7 +43,7 @@ func (s *Service) HandleError(command *SlashCommand, err error) error {
 func (s *Service) HandleCommand(command *SlashCommand) error {
 	switch command.Command {
 	case "/ticket":
-		if err := s.SlackService.SendView(defaultDialog, command.TriggerId); err != nil {
+		if err := s.SlackService.SendView(defaultDialog(), command.TriggerId); err != nil {
 			return fmt.Errorf("coouldn't send slack view for command %v due to -> %w", command, err)
 		}
 	default:
@@ -83,88 +83,90 @@ func (s *Service) HandleForm(form *FormPayload) error {
 	return nil
 }
 
-var defaultDialog = &Slack.DialogView{
-	CallbackID: ticketFormCallBackID,
-	Type:       Slack.DialogViewTypeModal,
-	Submit: Slack.ViewLabel{
-		Type:  Slack.ViewLabelTypePlainText,
-		Text:  L10n.Print.Sprintf(L10n.SDFormSendKey),
-		Emoji: true,
-	},
-	Close: Slack.ViewLabel{
-		Type:  Slack.ViewLabelTypePlainText,
-		Text:  L10n.Print.Sprintf(L10n.SDFormCancelKey),
-		Emoji: true,
-	},
-	Title: Slack.ViewLabel{
-		Type:  Slack.ViewLabelTypePlainText,
-		Text:  L10n.Print.Sprintf(L10n.SDFormHeadTitleKey),
-		Emoji: true,
-	},
-	Blocks: []Slack.BlockItem{
-		{
-			ID:   ticketFormTitleBlockID,
-			Type: Slack.BlockItemTypeInput,
-			Label: Slack.ViewLabel{
-				Type: Slack.ViewLabelTypePlainText,
-				Text: L10n.Print.Sprintf(L10n.SDFormFieldTitleNameKey),
-			},
-			Element: Slack.BlockElement{
-				Type:        Slack.BlockElementTypePlainTextInput,
-				ActionID:    ticketBlockTitleElementActionId,
-				IsMultiline: false,
-			},
+func defaultDialog() *Slack.DialogView {
+	return &Slack.DialogView{
+		CallbackID: ticketFormCallBackID,
+		Type:       Slack.DialogViewTypeModal,
+		Submit: Slack.ViewLabel{
+			Type:  Slack.ViewLabelTypePlainText,
+			Text:  L10n.Print.Sprintf(L10n.SDFormSendKey),
+			Emoji: true,
 		},
-		{
-			ID:   ticketFormPriorityBlockID,
-			Type: Slack.BlockItemTypeInput,
-			Label: Slack.ViewLabel{
-				Type: Slack.ViewLabelTypePlainText,
-				Text: L10n.Print.Sprintf(L10n.SDFormFieldPriorityKey),
+		Close: Slack.ViewLabel{
+			Type:  Slack.ViewLabelTypePlainText,
+			Text:  L10n.Print.Sprintf(L10n.SDFormCancelKey),
+			Emoji: true,
+		},
+		Title: Slack.ViewLabel{
+			Type:  Slack.ViewLabelTypePlainText,
+			Text:  L10n.Print.Sprintf(L10n.SDFormHeadTitleKey),
+			Emoji: true,
+		},
+		Blocks: []Slack.BlockItem{
+			{
+				ID:   ticketFormTitleBlockID,
+				Type: Slack.BlockItemTypeInput,
+				Label: Slack.ViewLabel{
+					Type: Slack.ViewLabelTypePlainText,
+					Text: L10n.Print.Sprintf(L10n.SDFormFieldTitleNameKey),
+				},
+				Element: Slack.BlockElement{
+					Type:        Slack.BlockElementTypePlainTextInput,
+					ActionID:    ticketBlockTitleElementActionId,
+					IsMultiline: false,
+				},
 			},
-			Element: Slack.BlockElement{
-				Type:     Slack.BlockElementTypeStaticSelect,
-				ActionID: ticketFormPriorityElementActionID,
-				Options: []Slack.BlockElementOption{
-					{
-						Text: Slack.ViewLabel{
-							Type:  Slack.ViewLabelTypePlainText,
-							Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityLowKey),
-							Emoji: false,
+			{
+				ID:   ticketFormPriorityBlockID,
+				Type: Slack.BlockItemTypeInput,
+				Label: Slack.ViewLabel{
+					Type: Slack.ViewLabelTypePlainText,
+					Text: L10n.Print.Sprintf(L10n.SDFormFieldPriorityKey),
+				},
+				Element: Slack.BlockElement{
+					Type:     Slack.BlockElementTypeStaticSelect,
+					ActionID: ticketFormPriorityElementActionID,
+					Options: []Slack.BlockElementOption{
+						{
+							Text: Slack.ViewLabel{
+								Type:  Slack.ViewLabelTypePlainText,
+								Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityLowKey),
+								Emoji: false,
+							},
+							Value: TicketPriorityValueLow,
 						},
-						Value: TicketPriorityValueLow,
-					},
-					{
-						Text: Slack.ViewLabel{
-							Type:  Slack.ViewLabelTypePlainText,
-							Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityMediumKey),
-							Emoji: false,
+						{
+							Text: Slack.ViewLabel{
+								Type:  Slack.ViewLabelTypePlainText,
+								Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityMediumKey),
+								Emoji: false,
+							},
+							Value: TicketPriorityValueMedium,
 						},
-						Value: TicketPriorityValueMedium,
-					},
-					{
-						Text: Slack.ViewLabel{
-							Type:  Slack.ViewLabelTypePlainText,
-							Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityHighKey),
-							Emoji: false,
+						{
+							Text: Slack.ViewLabel{
+								Type:  Slack.ViewLabelTypePlainText,
+								Text:  L10n.Print.Sprintf(L10n.SDFormFieldPriorityHighKey),
+								Emoji: false,
+							},
+							Value: TicketPriorityValueHigh,
 						},
-						Value: TicketPriorityValueHigh,
 					},
 				},
 			},
-		},
-		{
-			ID:   ticketFormDescriptionBlockID,
-			Type: Slack.BlockItemTypeInput,
-			Label: Slack.ViewLabel{
-				Type: Slack.ViewLabelTypePlainText,
-				Text: L10n.Print.Sprintf(L10n.SDFormFieldDescriptionKey),
+			{
+				ID:   ticketFormDescriptionBlockID,
+				Type: Slack.BlockItemTypeInput,
+				Label: Slack.ViewLabel{
+					Type: Slack.ViewLabelTypePlainText,
+					Text: L10n.Print.Sprintf(L10n.SDFormFieldDescriptionKey),
+				},
+				Element: Slack.BlockElement{
+					Type:        Slack.BlockElementTypePlainTextInput,
+					ActionID:    ticketBlockTitleElementActionId,
+					IsMultiline: true,
+				},
 			},
-			Element: Slack.BlockElement{
-				Type:        Slack.BlockElementTypePlainTextInput,
-				ActionID:    ticketBlockTitleElementActionId,
-				IsMultiline: true,
-			},
 		},
-	},
+	}
 }

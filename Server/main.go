@@ -1,7 +1,5 @@
 package main
 
-//go:generate go-localize -input localizations_src -output localizations
-
 import (
 	"github.com/LastSprint/GopherDesk/Api/Slack"
 	"github.com/LastSprint/GopherDesk/Api/Trello"
